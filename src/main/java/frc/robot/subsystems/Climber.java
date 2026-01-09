@@ -38,7 +38,7 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber() {
     climberMotor.configure(
-      Configs.FunnelIntakeSubsystem.l_funnelMotorConfig,
+      Configs.ClimberSubsystem.climberMotorConfig,
       ResetMode.kResetSafeParameters,
       PersistMode.kPersistParameters);
 
