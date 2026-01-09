@@ -8,9 +8,7 @@ import frc.robot.commands.AutonLAlignToReefTagRelative;
 import frc.robot.commands.AutonRAlignToReefTagRelative;
 import frc.robot.commands.LAlignToReefTagRelative;
 import frc.robot.commands.RAlignToReefTagRelative;
-import frc.robot.Constants.IntakeSetpoints;
 import frc.robot.Constants.OIConstants;
-//import frc.robot.commands.Autos;
 import frc.robot.subsystems.CoralSubsystem;
 import frc.robot.subsystems.EndE;
 import frc.robot.subsystems.CoralSubsystem.Setpoint;
@@ -18,18 +16,12 @@ import frc.robot.subsystems.FunnelIntake;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.SwerveSubsystem;
 import swervelib.SwerveInputStream;
-// import frc.robot.subsystems.Algae;
-// import frc.robot.subsystems.AlgaeArmSubsystem;
 
 import java.io.File;
 import java.util.Map;
 
-import com.ctre.phoenix6.hardware.core.CoreCANcoder;
-import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.RobotCentric;
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -41,7 +33,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -63,9 +54,6 @@ public class RobotContainer {
         private final RAlignToReefTagRelative m_rAlignToReefTagRelative = new RAlignToReefTagRelative(drivebase);
         private final LAlignToReefTagRelative m_lAlignToReefTagRelative = new LAlignToReefTagRelative(drivebase);
         private final SendableChooser<Command> autoChooser;
-        // private final Algae m_algae = new Algae();
-        // private final AlgaeArmSubsystem m_AlgaeArmSubsystem = new
-        // AlgaeArmSubsystem(m_coralSubsystem);
         // Replace with CommandPS4Controller or CommandJoystick if needed
         private final CommandXboxController m_driverController = new CommandXboxController(
                         OIConstants.kDriverControllerPort);
@@ -108,19 +96,6 @@ public class RobotContainer {
                 // Default to 0° (assuming forward should be field-oriented default)
                 double startingAngle = 0;
 
-                // var alliance = DriverStation.getAlliance();
-
-                // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-                // // If on Red Alliance, adjust heading to 180°
-                // startingAngle = 180;
-                // } else if (!DriverStation.isFMSAttached() && !DriverStation.isDSAttached()) {
-                // // If NOT connected to FMS or Driver Station (testing mode), allow manual
-                // // setting
-                // startingAngle = 0;
-                // System.out.println("Practice Mode: Setting starting heading to " +
-                // startingAngle);
-                // }
-
                 // Set the correct initial heading for field-oriented driving
                 drivebase.setInitialHeading(startingAngle);
 
@@ -158,16 +133,6 @@ public class RobotContainer {
                 NamedCommands.registerCommand("ComboScoringL", Commands.sequence(
                                 new AutonLAlignToReefTagRelative(drivebase)
                                                 .andThen(this.scoreUniversal().withTimeout(0.3))));
-                // NamedCommands.registerCommand("AlignR", new SequentialCommandGroup(
-                // Commands.waitUntil(() -> m_EndE.isCoralEngaged()),
-                // m_coralSubsystem.setSetpointCommand(Setpoint.L4),
-                // new RAlignToReefTagRelative(drivebase),
-                // this.ScoreUniversal().withTimeout(1)));
-                // NamedCommands.registerCommand("AlignL", new SequentialCommandGroup(
-                // Commands.waitUntil(() -> m_EndE.isCoralEngaged()),
-                // m_coralSubsystem.setSetpointCommand(Setpoint.L4),
-                // new LAlignToReefTagRelative(drivebase),
-                // this.ScoreUniversal().withTimeout(1)));
                 NamedCommands.registerCommand("AlignR",
                                 new RAlignToReefTagRelative(drivebase));
                 NamedCommands.registerCommand("AlignL1",
@@ -206,50 +171,6 @@ public class RobotContainer {
 
         Command driveFieldOrientedAngluarVelocity = drivebase.driveFieldOriented(driveAngulareVelocity);
 
-        // Command ScoreUniversal() {
-        // return Commands.either(
-        // Commands.either(
-        // Commands.parallel(
-        // m_funnelIntakeSubsystem.runIntakeCommand(), // Run Funnel Intake
-        // m_EndE.runIntakeCommand() // Run Coral Intake at the same time
-        // ),
-        // Commands.either(
-        // m_EndE.runIntakeCommand(), // If ElevatorAtL4 is true, run Reverse Intake
-        // m_EndE.runIntakeCommand(), // Otherwise, run normal intake
-        // () -> CoralSubsystem.ElevatorAtL4 // Condition for reverse intake
-        // ),
-        // () -> CoralSubsystem.runFunnelIntake // Condition for Funnel Intake
-        // ),
-        // m_EndE.runIntakeCommand(), // Do nothing
-        // () -> CoralSubsystem.runFunnelIntake || CoralSubsystem.ElevatorAtL4);
-        // }
-
-        // Command ScoreUniversal() {
-        // return Commands.either(
-        // m_EndE.reverseIntakeCommand(), // Run reverse intake at L4 or L3
-        // m_EndE.runIntakeCommand(), // Run normal intake everywhere else
-        // () -> CoralSubsystem.ElevatorAtL4);
-        // }
-        // Command Intake() {
-        // return Commands.either(
-        // m_EndE.reverseIntakeCommand(), // Run reverse intake at L4 or L3
-        // m_EndE.BrunIntakeCommandFeeder().andThen(m_EndE.runIntakeCommand().withTimeout(.2)),
-        // // Run normal intake everywhere else
-        // () -> CoralSubsystem.ElevatorAtL4);
-        // }
-
-        // Command Universal() {
-        // if (CoralSubsystem.runFunnelIntake) {
-        // return m_EndE.BrunIntakeCommandFeeder()
-        // .andThen(m_EndE.runIntakeCommand().withTimeout(0.2));
-        // }
-
-        // if (CoralSubsystem.ElevatorAtL4) {
-        // return m_EndE.reverseIntakeCommand();
-        // }
-
-        // return m_EndE.runIntakeCommand();
-        // }
         Command scoreUniversal() {
                 return Commands.select(Map.of(
                                 "FUNNEL", m_EndE.BrunIntakeCommandFeeder()
@@ -303,12 +224,6 @@ public class RobotContainer {
                                 .and(funnelIntakeTrigger)
                                 .whileTrue(m_EndE.BrunIntakeCommandFeeder()
                                                 .andThen(m_EndE.runIntakeCommand().withTimeout(.2)));
-                // .whileTrue(m_EndE.BrunIntakeCommandFeeder(hasLostContact).andThen(m_EndE.reverseIntakeCommand().withTimeout(.2)));//
-                // .onlyIf(m_operatorController.leftBumper()));
-
-                // m_operatorController.leftBumper().whileTrue(new CoralIntake(m_EndE));
-                // m_operatorController.start().whileTrue(m_coralSubsystem.manualElevatorDown());
-
                 operatorIntakeTrigger
                                 .and(funnelIntakeTrigger.negate())
                                 .and(elevatorAtL4Trigger)
@@ -320,7 +235,6 @@ public class RobotContainer {
                                 .whileTrue(m_EndE.runIntakeCommand());
 
                 // Right Bumper -> Run tube intake in reverse
-                // m_driverController.y().whileTrue(m_algae.runAlgaeInCommand());
                 operatorReverseIntakeTrigger.whileTrue(m_EndE.reverseIntakeCommand());
 
                 operatorReverseIntakeTrigger
@@ -338,12 +252,6 @@ public class RobotContainer {
                                 .and(elevatorAtL4Trigger.negate())
                                 .whileTrue(m_EndE.reverseIntakeCommand());
 
-                // Reef alignment
-                // m_driverController.rightBumper().whileTrue(new
-                // RAlignToReefTagRelative(drivebase));
-                // m_driverController.leftBumper().whileTrue(new
-                // LAlignToReefTagRelative(drivebase));
-                // driverAlignRightTrigger.whileTrue(new RAlignToReefTagRelative(drivebase));
                 driverAlignLeftTrigger.whileTrue(Commands.sequence(
                                 Commands.waitUntil(() -> LimelightHelpers.getTV("limelight-right")
                                                
@@ -351,8 +259,6 @@ public class RobotContainer {
                                 new LAlignToReefTagRelative(drivebase).andThen(
                                                 this.scoreUniversal().withTimeout(0.3))
                              ));
-                                // drivebase.backUpRobotCommand().withTimeout(0.8).andThen(drivebase.stopCommand(),
-                                //                 m_coralSubsystem.setSetpointCommand(Setpoint.FeederStation, false))));
                 driverOverrideTrigger.onTrue(Commands.runOnce(() -> m_coralSubsystem.setDriverOverrideActive(true)));
                 driverOverrideTrigger.onFalse(Commands.runOnce(() -> m_coralSubsystem.setDriverOverrideActive(false)));
 
@@ -363,8 +269,6 @@ public class RobotContainer {
                                         
                                                 this.scoreUniversal().withTimeout(0.3))
                                ));
-                                // drivebase.backUpRobotCommand().withTimeout(0.8).andThen(drivebase.stopCommand(),
-                                //                 m_coralSubsystem.setSetpointCommand(Setpoint.FeederStation, false))));
 
                 // B Button -> Elevator/Arm to human player position, set ball intake to stow
                 // when idle
@@ -390,9 +294,6 @@ public class RobotContainer {
                 operatorBargeTrigger.onTrue(m_coralSubsystem.setSetpointCommand(Setpoint.Barge, false));
 
                 driverHeadingResetTrigger.onTrue(new InstantCommand(() -> drivebase.setInitialHeading(180), drivebase));
-                // m_driverController.rightTrigger().whileTrue(this.ScoreUniversal());
-                // m_operatorController.rightStick().onTrue(m_coralSubsystem.resetElevatorEncoder());
-
                 // A Button -> Climber Goes In
                 driverClimberInTrigger.whileTrue(m_climber.runClimberCommand());
                 // B Button -> Climber Goes Out
@@ -411,17 +312,7 @@ public class RobotContainer {
                                         m_operatorController.setRumble(RumbleType.kBothRumble, 0.0);
                                 })));
 
-                // Resets all encoders
-                // m_operatorController.start().onTrue(m_coralSubsystem.resetAllEncoders());
-                // m_operatorController.leftTrigger(0.3).whileTrue(m_AlgaeArmSubsystem.coralToAlgae());
-                // m_operatorController.leftTrigger(0.5).whileTrue((m_AlgaeArmSubsystem.coralToAlgae()));
-                // m_operatorController.rightTrigger(0.5).whileTrue((m_AlgaeArmSubsystem.runGroundArmAlgaeCommand().alongWith(m_algae.runAlgaeInCommand())));
-                // m_operatorController.povRight().whileTrue(m_algae.runAlgaeOutCommand());
         }
-
-        // public PathPlannerAuto pathPlannerAuto() {
-        //         return new PathPlannerAuto("tryhard2left", true);
-        // }
 
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
