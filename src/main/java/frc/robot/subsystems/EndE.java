@@ -2,15 +2,11 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import au.grapplerobotics.CanBridge;
 import au.grapplerobotics.LaserCan;
 import au.grapplerobotics.interfaces.LaserCanInterface.Measurement;
-import au.grapplerobotics.ConfigurationFailedException;
-import java.time.Period;
 
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import au.grapplerobotics.GrappleJNI;
 //import au.grapplerobotics.LaserCan;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -18,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Configs;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.IntakeSetpoints;
-import frc.robot.Robot;
+// import frc.robot.Robot;
 
 public class EndE extends SubsystemBase {
     private LaserCan lc = new LaserCan(29);

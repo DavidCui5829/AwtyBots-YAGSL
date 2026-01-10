@@ -5,9 +5,9 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Meter;
-import static edu.wpi.first.units.Units.Rotation;
+// import static edu.wpi.first.units.Units.Rotation;
 
-import edu.wpi.first.math.estimator.PoseEstimator;
+// import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,21 +21,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ClimbSetPoints;
+// import frc.robot.Constants.ClimbSetPoints;
 
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import java.io.File;
 import java.util.function.Supplier;
 
-import com.ctre.phoenix6.swerve.SwerveModule;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import frc.robot.util.ScoreSafetyManager;

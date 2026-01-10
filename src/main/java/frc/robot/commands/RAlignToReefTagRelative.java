@@ -4,11 +4,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,7 +18,6 @@ import frc.robot.util.ScoreSafetyManager;
 
 public class RAlignToReefTagRelative extends Command {
   private PIDController xController, yController, rotController;
-  private ProfiledPIDController rotControllerProfiled;
   // private boolean isRightScore;
   private Timer dontSeeTagTimer, stopTimer;
   private SwerveSubsystem drivebase;

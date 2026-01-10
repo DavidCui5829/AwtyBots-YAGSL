@@ -4,27 +4,19 @@
 
 package frc.robot.commands;
 
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly.CoralStationsSide;
-
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
-//mport frc.robot.Configs.CoralSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.util.ScoreSafetyManager;
-import frc.robot.subsystems.CoralSubsystem;
 
 public class AutonLAlignToReefTagRelative extends Command {
   private PIDController xController, yController, rotController;
-  private ProfiledPIDController rotControllerProfiled;
   // private boolean isRightScore;
   private Timer dontSeeTagTimer, stopTimer;
   private SwerveSubsystem drivebase;
