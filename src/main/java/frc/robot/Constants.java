@@ -6,8 +6,12 @@ package frc.robot;
 
 // import frc.robot.Constants.NeoMotorConstants;
 // import frc.robot.LimelightHelpers;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -164,6 +168,15 @@ public final class Constants {
     public static final double kForward = 0.20; // Motor output to run funnel intake forward
     public static final double kReverse = 0.30; // Motor output to run funnel intake in reverse
     public static final double kHold = 0.0; // Motor output to hold funnel intake stationary
+  }
+
+  public static final class VisionConstants {
+    public static final String LIMELIGHT_LEFT_NAME = "limelight-left";
+    public static final String LIMELIGHT_RIGHT_NAME = "limelight-right";
+    public static final int MIN_TAG_COUNT = 1;
+    public static final double MAX_TAG_DISTANCE_METERS = 4.0;
+    public static final Matrix<N3, N1> ODOMETRY_STD_DEVS = VecBuilder.fill(0.05, 0.05, Math.toRadians(2.5));
+    public static final Matrix<N3, N1> VISION_STD_DEVS = VecBuilder.fill(0.7, 0.7, Math.toRadians(8.0));
   }
 
   public static final class IntakeSetpoints {

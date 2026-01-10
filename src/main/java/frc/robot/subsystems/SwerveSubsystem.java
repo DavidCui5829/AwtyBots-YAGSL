@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 // import frc.robot.Constants.ClimbSetPoints;
 
 import com.studica.frc.AHRS;
@@ -77,7 +78,9 @@ public class SwerveSubsystem extends SubsystemBase {
       getKinematics(), 
       Rotation2d.fromDegrees(getGyroYaw()), 
       swerveDrive.getModulePositions(), 
-      new Pose2d(0.0,0.0, new Rotation2d())
+      new Pose2d(0.0,0.0, new Rotation2d()),
+      Constants.VisionConstants.ODOMETRY_STD_DEVS,
+      Constants.VisionConstants.VISION_STD_DEVS
       );
   }
 
@@ -253,13 +256,12 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    Pose2d rawPose = swerveDrive.getPose();
-    Pose2d baisedPose = new Pose2d(
-      rawPose.getTranslation(),
-      rawPose.getRotation().plus(Rotation2d.fromDegrees(headingBias))
+    Pose2d estimatedPose = poseEstimator.getEstimatedPosition();
+    Pose2d biasedPose = new Pose2d(
+      estimatedPose.getTranslation(),
+      estimatedPose.getRotation().plus(Rotation2d.fromDegrees(headingBias))
     );
-    //return swerveDrive.getPose();
-    return baisedPose;
+    return biasedPose;
   }
   public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
     swerveDrive.drive(translation,
@@ -295,6 +297,7 @@ public class SwerveSubsystem extends SubsystemBase {
       swerveDrive.getModulePositions() 
       );
 
+    applyVisionMeasurements();
     ScoreSafetyManager.updateWithCurrentPose(getPose());
 
     if (shouldUpdateDashboard()) {
@@ -314,6 +317,37 @@ public class SwerveSubsystem extends SubsystemBase {
       }
     }
 
+  }
+
+  private void applyVisionMeasurements() {
+    addVisionMeasurementFromLimelight(Constants.VisionConstants.LIMELIGHT_LEFT_NAME);
+    addVisionMeasurementFromLimelight(Constants.VisionConstants.LIMELIGHT_RIGHT_NAME);
+  }
+
+  private void addVisionMeasurementFromLimelight(String limelightName) {
+    LimelightHelpers.PoseEstimate poseEstimate = getLimelightPoseEstimate(limelightName);
+    if (!LimelightHelpers.validPoseEstimate(poseEstimate)) {
+      return;
+    }
+    if (poseEstimate.tagCount < Constants.VisionConstants.MIN_TAG_COUNT) {
+      return;
+    }
+    if (poseEstimate.avgTagDist > Constants.VisionConstants.MAX_TAG_DISTANCE_METERS) {
+      return;
+    }
+
+    double distanceScale = Math.max(1.0, poseEstimate.avgTagDist / Constants.VisionConstants.MAX_TAG_DISTANCE_METERS);
+    poseEstimator.setVisionMeasurementStdDevs(
+      Constants.VisionConstants.VISION_STD_DEVS.times(distanceScale));
+    poseEstimator.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+  }
+
+  private LimelightHelpers.PoseEstimate getLimelightPoseEstimate(String limelightName) {
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+      return LimelightHelpers.getBotPoseEstimate_wpiRed(limelightName);
+    }
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
   }
 
 }
