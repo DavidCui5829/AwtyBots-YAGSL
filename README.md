@@ -55,6 +55,9 @@ This README orients new contributors to the project layout, subsystems, controls
 
 Tip: The numeric CAN IDs in `Constants.DriveConstants` are from a MAXSwerve template and not used by YAGSL. YAGSL reads IDs/offsets from the deploy JSONs.
 
+## Localization & Pose Estimation
+Limelight pose estimator fused with wheel odometry is a localization system that continuously estimates a robot’s true position and heading on the field by combining two complementary data sources: encoder- and gyro-based odometry, which provides smooth, high-frequency tracking of how the robot moves, and Limelight’s AprilTag-based vision measurements, which provide an absolute, field-referenced position. A Kalman-filter-based pose estimator (WPILib’s `SwerveDrivePoseEstimator`) predicts the robot’s pose from wheel motion, then periodically corrects that estimate using delayed, noisy but globally accurate vision data from the Limelight, weighting each source by its uncertainty so that odometry supplies stability and vision removes drift. The result is a continuously updated, low-latency, drift-free field pose that remains accurate even after wheel slip, collisions, or long autonomous paths.
+
 ## Subsystems & Setpoints
 ### SwerveSubsystem
 - Field-oriented and robot-oriented driving methods, drive-to-pose helper, and `zeroHeadingCommand()`.
